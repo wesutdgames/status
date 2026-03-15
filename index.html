@@ -1,90 +1,55 @@
 <script>
+const NS_JSON = "https://wesutdgames.github.io/status/ns.json";
+const EW_JSON = "https://wesutdgames.github.io/status/ew.json";
 
-/* ===============================
-   GITHUB JSON URL
-=============================== */
+let currentLang = "en";
 
-const NS_JSON =
-"https://wesutdgames.github.io/status/ns.json";
+function updateLanguage() {
+  const select = document.getElementById("langSelect");
+  if (select) currentLang = select.value || "en";
+}
 
-const EW_JSON =
-"https://wesutdgames.github.io/status/ew.json";
+async function updateLine(jsonUrl, boxId, msgId, lineName) {
+  const box = document.getElementById(boxId);
+  const msgEl = document.getElementById(msgId);
 
-
-/* =============================
-   FUNCTION: Update NS Line
-============================= */
-
-async function updateNS(lang) {
-
-  const box = document.getElementById("trainNS");
-  const msgEl = document.getElementById("statusMsgNS");
+  if (!box || !msgEl) return; // Safety: stop if elements not found
 
   try {
-
-    const response =
-    await fetch(NS_JSON + "?nocache=" + Date.now());
-
+    const response = await fetch(jsonUrl + "?nocache=" + Date.now());
     const row = await response.json();
 
     let status = row?.Status?.toLowerCase();
-
-    let message =
-      lang === "am" ? row?.Amharic :
-      lang === "en" ? row?.English :
-      row?.Oromo;
+    let message = currentLang === "am" ? row?.Amharic :
+                  currentLang === "en" ? row?.English :
+                  row?.Oromo;
 
     if (!status || !message) {
-
       const hour = new Date().getHours();
+      status = hour >= 6 && hour < 22 ? "operating" :
+               hour >= 22 && hour < 24 ? "finished" :
+               hour >= 0 && hour < 5 ? "construction" : "returning";
 
-      if (hour >= 6 && hour < 22) {
+      const messages = {
+        NS: {
+          operating: { en:"🚆 NS Line full service", am:"🚆 የቃሊቲ መስመር ሙሉ አገልግሎት", or:"🚆 NS Line guutuu tajaajila" },
+          finished: { en:"🏁 NS Line service finished", am:"🏁 የቃሊቲ መስመር ተጠናቋል", or:"🏁 NS Line xumurame" },
+          construction: { en:"🚧 NS Line under maintenance", am:"🚧 በቃሊቲ መስመር ጥገና", or:"🚧 NS Line sirreessaa" },
+          returning: { en:"🚆 NS Line preparing", am:"🚆 የቃሊቲ መስመር በዝግጅት", or:"🚆 NS Line qophaa’aa jira" }
+        },
+        EW: {
+          operating: { en:"🚆 EW Line full service", am:"🚆 የአያት መስመር ሙሉ አገልግሎት", or:"🚆 EW Line guutuu tajaajila" },
+          finished: { en:"🏁 EW Line service finished", am:"🏁 የአያት መስመር ተጠናቋል", or:"🏁 EW Line xumurame" },
+          construction: { en:"🚧 EW Line under maintenance", am:"🚧 በአያት መስመር ጥገና", or:"🚧 EW Line sirreessaa" },
+          returning: { en:"🚆 EW Line preparing", am:"🚆 የአያት መስመር በዝግጅት", or:"🚆 EW Line qophaa’aa jira" }
+        }
+      };
 
-        status = "operating";
-
-        message = {
-          am:"🚆 የቃሊቲ መስመር ባቡር ሙሉ አገልግሎት እየሰጠ ይገኛል",
-          en:"🚆 The North-south line train is currently providing full service",
-          or:"🚆 Daandii Kaliti irratti konkolaataa guutuu tajaajila kennaa jira"
-        }[lang];
-
-      } else if (hour >= 22 && hour < 24) {
-
-        status = "finished";
-
-        message = {
-          am:"🏁 የቃሊቲ መስመር መደበኛ የባቡር አገልግሎት ተጠናቋል!",
-          en:"🏁 The regular train service on the North-south line has been completed!",
-          or:"🏁 Tajaajilli konkolaataa daandii Kaliti irratti yeroo duraa xumurameera!"
-        }[lang];
-
-      } else if (hour >= 0 && hour < 5) {
-
-        status = "construction";
-
-        message = {
-          am:"🚧 በቃሊቲ መስመር መደበኛ የጥገና ስራ እየተካሄደ ይገኛል",
-          en:"🚧 Regular maintenance work is currently underway on the North-south line",
-          or:"🚧 Dalagaa sirreessaa yeroo ammaa daandii Kaliti irratti gaggeeffamaa jira"
-        }[lang];
-
-      } else {
-
-        status = "returning";
-
-        message = {
-          am:"🚆 የቃሊቲ መስመር የባቡር አገልግሎት ለመጀመር በዝግጅት ላይ ይገኛል",
-          en:"🚆 The North-south line train service is being prepared to start",
-          or:"🚆 Tajaajilli konkolaataa daandii Kaliti jalqabuu akka qabu qophaa’aa jira"
-        }[lang];
-
-      }
-
+      message = messages[lineName][status][currentLang];
     }
 
     const oldDot = box.querySelector(".status-dot");
     if (oldDot) oldDot.remove();
-
     if (status === "stopped") {
       const dot = document.createElement("span");
       dot.className = "status-dot";
@@ -94,157 +59,31 @@ async function updateNS(lang) {
     msgEl.textContent = message;
     box.className = "status-box " + status;
 
+  } catch (e) {
+    console.error("Fetch failed:", jsonUrl, e);
+    msgEl.textContent = currentLang === "am" ? "❌📶 እባክዎ Wi-Fi ወይም ዳታ ያብሩ" :
+                        currentLang === "en" ? "❌📶 Please turn on Wi-Fi or data." :
+                        "❌📶 Mee Wi-Fi ykn data banaa";
+    if(box) box.className = "status-box stopped";
   }
-
-  catch (e) {
-
-    msgEl.textContent =
-      lang === "am" ? "❌📶 እባክዎ Wi-Fi ወይም ዳታ ያብሩ" :
-      lang === "en" ? "❌📶 Please turn on Wi-Fi or data." :
-      "❌📶 Mee Wi-Fi ykn data banaa.";
-
-    box.className = "status-box stopped";
-
-  }
-
 }
-
-
-/* =============================
-   FUNCTION: Update EW Line
-============================= */
-
-async function updateEW(lang) {
-
-  const box = document.getElementById("trainEW");
-  const msgEl = document.getElementById("statusMsgEW");
-
-  try {
-
-    const response =
-    await fetch(EW_JSON + "?nocache=" + Date.now());
-
-    const row = await response.json();
-
-    let status = row?.Status?.toLowerCase();
-
-    let message =
-      lang === "am" ? row?.Amharic :
-      lang === "en" ? row?.English :
-      row?.Oromo;
-
-    if (!status || !message) {
-
-      const hour = new Date().getHours();
-
-      if (hour >= 6 && hour < 22) {
-
-        status = "operating";
-
-        message = {
-          am:"🚆 በአያት መስመር ባቡር ሙሉ አገልግሎት እየሰጠ ይገኛል",
-          en:"🚆 The East-West line train is currently providing full service",
-          or:"🚆 Daandii Ayat irratti konkolaataa guutuu tajaajila kennaa jira"
-        }[lang];
-
-      } else if (hour >= 22 && hour < 24) {
-
-        status = "finished";
-
-        message = {
-          am:"🏁 የአያት መስመር መደበኛ የባቡር አገልግሎት ተጠናቋል!",
-          en:"🏁 The regular train service on the East-West line has been completed!",
-          or:"🏁 Tajaajilli konkolaataa daandii Ayat irratti yeroo duraa xumurameera!"
-        }[lang];
-
-      } else if (hour >= 0 && hour < 5) {
-
-        status = "construction";
-
-        message = {
-          am:"🚧 በአያት መስመር መደበኛ የጥገና ስራ እየተካሄደ ይገኛል",
-          en:"🚧 Regular maintenance work is currently underway on the East-West line",
-          or:"🚧 Dalagaa sirreessaa yeroo ammaa daandii Ayat irratti gaggeeffamaa jira"
-        }[lang];
-
-      } else {
-
-        status = "returning";
-
-        message = {
-          am:"🚆 የአያት መስመር የባቡር አገልግሎት ለመጀመር በዝግጅት ላይ ይገኛል",
-          en:"🚆 The East-West line train service is being prepared to start",
-          or:"🚆 Tajaajilli konkolaataa daandii Ayat jalqabuu akka qabu qophaa’aa jira"
-        }[lang];
-
-      }
-
-    }
-
-    const oldDot = box.querySelector(".status-dot");
-    if (oldDot) oldDot.remove();
-
-    if (status === "stopped") {
-      const dot = document.createElement("span");
-      dot.className = "status-dot";
-      box.appendChild(dot);
-    }
-
-    msgEl.textContent = message;
-    box.className = "status-box " + status;
-
-  }
-
-  catch (e) {
-
-    msgEl.textContent =
-      lang === "am" ? "❌📶 እባክዎ Wi-Fi ወይም ዳታ ያብሩ" :
-      lang === "en" ? "❌📶 Please turn on Wi-Fi or data." :
-      "❌📶 Mee Wi-Fi ykn data banaa.";
-
-    box.className = "status-box stopped";
-
-  }
-
-}
-
-
-/* =============================
-   UPDATE BOTH LINES
-============================= */
 
 function updateAllLines() {
-
-  const lang =
-  document.getElementById("langSelect").value;
-
-  updateNS(lang);
-  updateEW(lang);
-
+  updateLine(NS_JSON, "trainNS", "statusMsgNS", "NS");
+  updateLine(EW_JSON, "trainEW", "statusMsgEW", "EW");
 }
 
+document.addEventListener("DOMContentLoaded", () => {
+  updateLanguage();
+  updateAllLines();
+  setInterval(updateAllLines, 60000);
 
-/* =============================
-   INITIAL LOAD
-============================= */
-
-updateLanguage();
-updateAllLines();
-
-setInterval(updateAllLines,60000);
-
-
-/* =============================
-   LANGUAGE SELECTOR
-============================= */
-
-document
-.getElementById("langSelect")
-.addEventListener("change",()=>{
-
-updateLanguage();
-updateAllLines();
-
+  const langSelect = document.getElementById("langSelect");
+  if (langSelect) {
+    langSelect.addEventListener("change", () => {
+      updateLanguage();
+      updateAllLines();
+    });
+  }
 });
-
 </script>
