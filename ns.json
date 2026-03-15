@@ -1,16 +1,16 @@
 {
   "status": {
-    "month": 3,
-    "hour": 20,
-    "authMode": "FULL",
-    "week-of-year": 11,
-    "year": 2026,
-    "day-of-week": 7,
-    "minute": 59,
     "timezone": "UTC",
     "triggerUid": "6097611208817377280",
+    "hour": 21,
     "day-of-month": 15,
-    "second": 1
+    "minute": 0,
+    "year": 2026,
+    "second": 1,
+    "week-of-year": 11,
+    "authMode": "FULL",
+    "day-of-week": 7,
+    "month": 3
   },
-  "last_updated": "2026-03-15T20:59:02.588Z"
+  "last_updated": "2026-03-15T21:00:02.669Z"
 }
