@@ -1,89 +1,149 @@
-<script>
-const NS_JSON = "https://wesutdgames.github.io/status/ns.json";
-const EW_JSON = "https://wesutdgames.github.io/status/ew.json";
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Train Status</title>
+  <style>
+    body { font-family: Arial, sans-serif; padding: 20px; background:#f0f0f0; }
+    .status-box { 
+      display: flex; 
+      align-items: center; 
+      margin: 15px 0; 
+      padding: 15px; 
+      border-radius: 10px; 
+      color: #fff; 
+      font-size: 1.1em; 
+    }
+    .status-box.operating { background: #28a745; }
+    .status-box.finished { background: #007bff; }
+    .status-box.construction { background: #ffc107; color:#000; }
+    .status-box.returning { background: #17a2b8; }
+    .status-box.stopped { background: #dc3545; }
+    .status-dot { 
+      width: 12px; height: 12px; 
+      background: #fff; 
+      border-radius: 50%; 
+      display: inline-block; 
+      margin-right: 10px; 
+    }
+    select { font-size:1em; padding:5px; margin-bottom:20px; }
+  </style>
+</head>
+<body>
 
-let currentLang = "en";
+  <h1>Train Status Dashboard</h1>
 
-function updateLanguage() {
-  const select = document.getElementById("langSelect");
-  if (select) currentLang = select.value || "en";
-}
+  <label for="langSelect">Select Language:</label>
+  <select id="langSelect">
+    <option value="en">English</option>
+    <option value="am">Amharic</option>
+    <option value="or">Oromo</option>
+  </select>
 
-async function updateLine(jsonUrl, boxId, msgId, lineName) {
-  const box = document.getElementById(boxId);
-  const msgEl = document.getElementById(msgId);
+  <div id="trainNS" class="status-box">
+    <span class="status-dot"></span>
+    <span id="statusMsgNS">Loading North-South line status...</span>
+  </div>
 
-  if (!box || !msgEl) return; // Safety: stop if elements not found
+  <div id="trainEW" class="status-box">
+    <span class="status-dot"></span>
+    <span id="statusMsgEW">Loading East-West line status...</span>
+  </div>
 
-  try {
-    const response = await fetch(jsonUrl + "?nocache=" + Date.now());
-    const row = await response.json();
+  <script>
+    /* ===============================
+       GITHUB JSON URLS
+    ================================ */
+    const NS_JSON = "https://wesutdgames.github.io/status/ns.json";
+    const EW_JSON = "https://wesutdgames.github.io/status/ew.json";
 
-    let status = row?.Status?.toLowerCase();
-    let message = currentLang === "am" ? row?.Amharic :
-                  currentLang === "en" ? row?.English :
-                  row?.Oromo;
+    let currentLang = "en";
 
-    if (!status || !message) {
-      const hour = new Date().getHours();
-      status = hour >= 6 && hour < 22 ? "operating" :
-               hour >= 22 && hour < 24 ? "finished" :
-               hour >= 0 && hour < 5 ? "construction" : "returning";
+    function updateLanguage() {
+      const select = document.getElementById("langSelect");
+      if (select) currentLang = select.value || "en";
+    }
 
-      const messages = {
-        NS: {
-          operating: { en:"🚆 NS Line full service", am:"🚆 የቃሊቲ መስመር ሙሉ አገልግሎት", or:"🚆 NS Line guutuu tajaajila" },
-          finished: { en:"🏁 NS Line service finished", am:"🏁 የቃሊቲ መስመር ተጠናቋል", or:"🏁 NS Line xumurame" },
-          construction: { en:"🚧 NS Line under maintenance", am:"🚧 በቃሊቲ መስመር ጥገና", or:"🚧 NS Line sirreessaa" },
-          returning: { en:"🚆 NS Line preparing", am:"🚆 የቃሊቲ መስመር በዝግጅት", or:"🚆 NS Line qophaa’aa jira" }
-        },
-        EW: {
-          operating: { en:"🚆 EW Line full service", am:"🚆 የአያት መስመር ሙሉ አገልግሎት", or:"🚆 EW Line guutuu tajaajila" },
-          finished: { en:"🏁 EW Line service finished", am:"🏁 የአያት መስመር ተጠናቋል", or:"🏁 EW Line xumurame" },
-          construction: { en:"🚧 EW Line under maintenance", am:"🚧 በአያት መስመር ጥገና", or:"🚧 EW Line sirreessaa" },
-          returning: { en:"🚆 EW Line preparing", am:"🚆 የአያት መስመር በዝግጅት", or:"🚆 EW Line qophaa’aa jira" }
+    async function updateLine(jsonUrl, boxId, msgId, lineName) {
+      const box = document.getElementById(boxId);
+      const msgEl = document.getElementById(msgId);
+
+      if (!box || !msgEl) return; // Safety
+
+      try {
+        const response = await fetch(jsonUrl + "?nocache=" + Date.now());
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+        const row = await response.json();
+
+        let status = row?.Status?.toLowerCase();
+        let message = currentLang === "am" ? row?.Amharic :
+                      currentLang === "en" ? row?.English :
+                      row?.Oromo;
+
+        // Fallback if JSON missing
+        if (!status || !message) {
+          const hour = new Date().getHours();
+          status = hour >= 6 && hour < 22 ? "operating" :
+                   hour >= 22 && hour < 24 ? "finished" :
+                   hour >= 0 && hour < 5 ? "construction" : "returning";
+
+          const messages = {
+            NS: {
+              operating: { en:"🚆 NS Line full service", am:"🚆 የቃሊቲ መስመር ሙሉ አገልግሎት", or:"🚆 Daandii Kaliti guutuu tajaajila" },
+              finished: { en:"🏁 NS Line service finished", am:"🏁 የቃሊቲ መስመር ተጠናቋል", or:"🏁 Daandii Kaliti xumurame" },
+              construction: { en:"🚧 NS Line under maintenance", am:"🚧 በቃሊቲ መስመር ጥገና", or:"🚧 Daandii Kaliti sirreessaa" },
+              returning: { en:"🚆 NS Line preparing", am:"🚆 የቃሊቲ መስመር በዝግጅት", or:"🚆 Daandii Kaliti qophaa’aa jira" }
+            },
+            EW: {
+              operating: { en:"🚆 EW Line full service", am:"🚆 የአያት መስመር ሙሉ አገልግሎት", or:"🚆 Daandii Ayat guutuu tajaajila" },
+              finished: { en:"🏁 EW Line service finished", am:"🏁 የአያት መስመር ተጠናቋል", or:"🏁 Daandii Ayat xumurame" },
+              construction: { en:"🚧 EW Line under maintenance", am:"🚧 በአያት መስመር ጥገና", or:"🚧 Daandii Ayat sirreessaa" },
+              returning: { en:"🚆 EW Line preparing", am:"🚆 የአያት መስመር በዝግጅት", or:"🚆 Daandii Ayat qophaa’aa jira" }
+            }
+          };
+
+          message = messages[lineName][status][currentLang];
         }
-      };
 
-      message = messages[lineName][status][currentLang];
+        const oldDot = box.querySelector(".status-dot");
+        if (oldDot) oldDot.remove();
+        if (status === "stopped") {
+          const dot = document.createElement("span");
+          dot.className = "status-dot";
+          box.insertBefore(dot, box.firstChild);
+        }
+
+        msgEl.textContent = message;
+        box.className = "status-box " + status;
+
+      } catch (e) {
+        console.error("Fetch failed:", jsonUrl, e);
+        msgEl.textContent = currentLang === "am" ? "❌📶 እባክዎ Wi-Fi ወይም ዳታ ያብሩ" :
+                            currentLang === "en" ? "❌📶 Please turn on Wi-Fi or data." :
+                            "❌📶 Mee Wi-Fi ykn data banaa";
+        if(box) box.className = "status-box stopped";
+      }
     }
 
-    const oldDot = box.querySelector(".status-dot");
-    if (oldDot) oldDot.remove();
-    if (status === "stopped") {
-      const dot = document.createElement("span");
-      dot.className = "status-dot";
-      box.appendChild(dot);
+    function updateAllLines() {
+      updateLine(NS_JSON, "trainNS", "statusMsgNS", "NS");
+      updateLine(EW_JSON, "trainEW", "statusMsgEW", "EW");
     }
 
-    msgEl.textContent = message;
-    box.className = "status-box " + status;
-
-  } catch (e) {
-    console.error("Fetch failed:", jsonUrl, e);
-    msgEl.textContent = currentLang === "am" ? "❌📶 እባክዎ Wi-Fi ወይም ዳታ ያብሩ" :
-                        currentLang === "en" ? "❌📶 Please turn on Wi-Fi or data." :
-                        "❌📶 Mee Wi-Fi ykn data banaa";
-    if(box) box.className = "status-box stopped";
-  }
-}
-
-function updateAllLines() {
-  updateLine(NS_JSON, "trainNS", "statusMsgNS", "NS");
-  updateLine(EW_JSON, "trainEW", "statusMsgEW", "EW");
-}
-
-document.addEventListener("DOMContentLoaded", () => {
-  updateLanguage();
-  updateAllLines();
-  setInterval(updateAllLines, 60000);
-
-  const langSelect = document.getElementById("langSelect");
-  if (langSelect) {
-    langSelect.addEventListener("change", () => {
+    document.addEventListener("DOMContentLoaded", () => {
       updateLanguage();
       updateAllLines();
+      setInterval(updateAllLines, 60000);
+
+      const langSelect = document.getElementById("langSelect");
+      if (langSelect) {
+        langSelect.addEventListener("change", () => {
+          updateLanguage();
+          updateAllLines();
+        });
+      }
     });
-  }
-});
-</script>
+  </script>
+</body>
+</html>
