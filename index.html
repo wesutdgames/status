@@ -1,3 +1,27 @@
+<h2>Test page working</h2>
+<script>
+const jsonURL = 'https://raw.githubusercontent.com/YOUR_USERNAME/hello-world/main/data.json';
+
+async function loadMessage() {
+  try {
+    const response = await fetch(jsonURL);
+    if (!response.ok) throw new Error('Failed to fetch JSON');
+    const data = await response.json(); // this parses JSON
+
+    document.getElementById('hello-text').innerText = data.message;
+    document.getElementById('hello-time').innerText = 'Updated at: ' + new Date(data.time).toLocaleString();
+  } catch (err) {
+    console.error('Error fetching JSON:', err);
+    document.getElementById('hello-text').innerText = 'Error loading JSON';
+  }
+}
+
+// Load immediately
+loadMessage();
+
+// Optional: refresh every 10 sec
+setInterval(loadMessage, 10000);
+</script>
 <script>
 const jsonURL = 'https://raw.githubusercontent.com/YOUR_USERNAME/hello-world/main/data.json';
 
