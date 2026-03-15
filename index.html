@@ -1,70 +1,38 @@
-<h2>Test page working wesu biruk</h2>
+<h2>Test page biruk</h2>
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Hello JSON</title>
+</head>
+
+<body>
+
+<h1 id="message">Loading...</h1>
+<p id="time"></p>
+
 <script>
-const jsonURL = 'https://raw.githubusercontent.com/wesutdgames/hello-worldf/main/data.json';
 
-async function loadMessage() {
+async function loadJSON() {
   try {
-    const response = await fetch(jsonURL);
-    if (!response.ok) throw new Error('Failed to fetch JSON');
-    const data = await response.json(); // this parses JSON
 
-    document.getElementById('hello-text').innerText = data.message;
-    document.getElementById('hello-time').innerText = 'Updated at: ' + new Date(data.time).toLocaleString();
-  } catch (err) {
-    console.error('Error fetching JSON:', err);
-    document.getElementById('hello-text').innerText = 'Error loading JSON';
+    const response = await fetch("./data.json");
+    const data = await response.json();
+
+    document.getElementById("message").textContent = data.message;
+    document.getElementById("time").textContent = "Updated: " + data.updated;
+
+  } catch (error) {
+
+    console.log(error);
+    document.getElementById("message").textContent = "Error loading JSON";
+
   }
 }
 
-// Load immediately
-loadMessage();
+loadJSON();
 
-// Optional: refresh every 10 sec
-setInterval(loadMessage, 10000);
 </script>
-<script>
-const jsonURL = 'https://raw.githubusercontent.com/wesutdgames/hello-worldf/main/data.json';
 
-async function loadMessage() {
-  try {
-    const response = await fetch(jsonURL);
-    if (!response.ok) throw new Error('Failed to fetch JSON');
-    const data = await response.json(); // this parses JSON
-
-    document.getElementById('hello-text').innerText = data.message;
-    document.getElementById('hello-time').innerText = 'Updated at: ' + new Date(data.time).toLocaleString();
-  } catch (err) {
-    console.error('Error fetching JSON:', err);
-    document.getElementById('hello-text').innerText = 'Error loading JSON';
-  }
-}
-
-// Load immediately
-loadMessage();
-
-// Optional: refresh every 10 sec
-setInterval(loadMessage, 10000);
-</script>
-<script>
-const jsonURL = 'https://raw.githubusercontent.com/wesutdgames/hello-world/main/data.json';
-
-async function loadMessage() {
-  try {
-    const response = await fetch(jsonURL);
-    if (!response.ok) throw new Error('Failed to fetch JSON');
-    const data = await response.json(); // this parses JSON
-
-    document.getElementById('hello-text').innerText = data.message;
-    document.getElementById('hello-time').innerText = 'Updated at: ' + new Date(data.time).toLocaleString();
-  } catch (err) {
-    console.error('Error fetching JSON:', err);
-    document.getElementById('hello-text').innerText = 'Error loading JSON';
-  }
-}
-
-// Load immediately
-loadMessage();
-
-// Optional: refresh every 10 sec
-setInterval(loadMessage, 10000);
-</script>
+</body>
+</html>
