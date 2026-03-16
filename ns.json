@@ -1,7 +1,10 @@
 {
-  "status": "stopped",
-  "am": "???? ???! ???? ???? ?????? ?????",
-  "en": "Happy Holiday! NS line not operational",
-  "or": "Baga ayyaana gahe! Karaan NS hin hojjetu",
-  "last_updated": "2026-03-16T12:14:58.034Z"
+  "authMode": "FULL",
+  "changeType": "EDIT",
+  "source": {},
+  "triggerUid": "2673360171719196672",
+  "user": {
+    "email": "wesutd.games@gmail.com",
+    "nickname": "wesutd.games"
+  }
 }
