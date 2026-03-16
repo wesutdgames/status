@@ -1,7 +1,10 @@
 {
-  "status": "stopped",
-  "am": "?????? ??? ?/???? ????? ?? ???? ????",
-  "en": "From Meshalekiya to Menelik II Square, working in short route",
-  "or": "Meshalekiya irraa gara Minilik II, saffisa gabaabaa hojjachaa jira",
-  "last_updated": "2026-03-16T21:12:06.477Z"
+  "authMode": "FULL",
+  "changeType": "EDIT",
+  "source": {},
+  "triggerUid": "2673360171719196672",
+  "user": {
+    "email": "wesutd.games@gmail.com",
+    "nickname": "wesutd.games"
+  }
 }
