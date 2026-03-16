@@ -1,7 +1,10 @@
 {
-  "status": "stopped",
-  "am": "???? ??? ????? ?? ????? ??? ?/???? ????? ?? ???? ????",
-  "en": "From Kaliti to Meshalekiya and Daramar to Menelik II Square, working in short route",
-  "or": "Kaliti irraa gara Meshalekiya fi Daramar irraa gara Minilik II hojjachaa jira",
-  "last_updated": "2026-03-16T20:51:49.439Z"
+  "authMode": "FULL",
+  "changeType": "EDIT",
+  "source": {},
+  "triggerUid": "2673360171719196672",
+  "user": {
+    "email": "wesutd.games@gmail.com",
+    "nickname": "wesutd.games"
+  }
 }
