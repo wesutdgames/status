@@ -1,13 +1,7 @@
 {
-  "triggerUid": "7855866447799517184",
-  "day-of-month": 17,
-  "month": 3,
-  "week-of-year": 12,
-  "year": 2026,
-  "authMode": "FULL",
-  "day-of-week": 2,
-  "timezone": "UTC",
-  "hour": 0,
-  "minute": 48,
-  "second": 1
+  "status": "stopped",
+  "am": "?????? ??? ?/???? ????? ?? ???? ????",
+  "en": "From Meshalekiya to Menelik II Square, working in short route",
+  "or": "Meshalekiya irraa gara Minilik II, saffisa gabaabaa hojjachaa jira",
+  "last_updated": "2026-03-17T00:48:28.869Z"
 }
