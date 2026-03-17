@@ -1,13 +1,7 @@
 {
-  "timezone": "UTC",
-  "authMode": "FULL",
-  "triggerUid": "7855866447799517184",
-  "day-of-month": 17,
-  "minute": 44,
-  "second": 1,
-  "hour": 0,
-  "year": 2026,
-  "week-of-year": 12,
-  "day-of-week": 2,
-  "month": 3
+  "status": "stopped",
+  "am": "???? ???? ?? ??? ???? ?????? ?????",
+  "en": "NS line Train service is fully stopped",
+  "or": "Karaan NS guutummaatti dhaabbateera",
+  "last_updated": "2026-03-17T00:44:09.293Z"
 }
