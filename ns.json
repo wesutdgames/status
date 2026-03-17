@@ -1,13 +1,7 @@
 {
-  "week-of-year": 12,
-  "month": 3,
-  "hour": 12,
-  "year": 2026,
-  "day-of-month": 17,
-  "timezone": "UTC",
-  "triggerUid": "7855866447799517184",
-  "day-of-week": 2,
-  "minute": 47,
-  "second": 1,
-  "authMode": "FULL"
+  "status": "stopped",
+  "am": "???? ??? ????? ????? ?? ???? ????",
+  "en": "From Kaliti to Stadium, working in short route",
+  "or": "Kaliti irraa gara Stadium, saffisa gabaabaa hojjachaa jira",
+  "last_updated": "2026-03-17T12:47:12.406Z"
 }
