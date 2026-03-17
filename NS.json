@@ -1,6 +1,13 @@
 {
-  "am_base64": "4Yqo4YmD4YiK4YmyIOGKpeGIteGKqCDhiJjhiL/hiIjhiqrhi6sg4Ymg4Yqg4Yyr4Yyt4YitIOGLmeGIrSDhiqXhi6jhiLDhiKsg4Yut4YyI4Yqb4YiN",
-  "am_plain": "ከቃሊቲ እስከ መሿለኪያ በአጫጭር ዙር እየሰራ ይገኛል",
-  "note": "The 'am_base64' field is the Amharic text encoded in base64. Decode it to see the original.",
-  "last_updated": "2026-03-17T07:56:35.815Z"
+  "authMode": "FULL",
+  "week-of-year": 12,
+  "day-of-month": 17,
+  "minute": 57,
+  "triggerUid": "7855866447799517184",
+  "hour": 7,
+  "timezone": "UTC",
+  "second": 1,
+  "year": 2026,
+  "day-of-week": 2,
+  "month": 3
 }
