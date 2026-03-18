@@ -14,7 +14,7 @@
 
 body {
   font-family: 'Segoe UI', Roboto, 'Arial', sans-serif;
-  background: none; /* ← completely removed */
+  background: none;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -23,6 +23,7 @@ body {
   gap: 30px;
   padding: 20px;
 }
+
 /* Language Selector */
 #langSelect {
   margin-bottom: 5px;
@@ -34,12 +35,12 @@ body {
   font-weight: 500;
   cursor: pointer;
 }
-/* ===== WELCOME BANNER – fancy upgrade ===== */
+
+/* ===== WELCOME BANNER ===== */
 #welcomeBanner {
   width: 100%;
   max-width: 1000px;
-  background: #F7AE05
-;
+  background: #F7AE05;
   border-radius: 50px;
   padding: 16px 24px;
   font-size: 1.6rem;
@@ -48,16 +49,9 @@ body {
   box-shadow: 0 15px 25px -10px rgba(0,50,80,0.2);
   border: 1px solid rgba(255,255,255,0.8);
   font-weight: 600;
-  letter-spacing: 1px;
-  backdrop-filter: blur(2px);
-  transition: transform 0.2s;
-}
-#welcomeBanner:hover {
-  transform: scale(1.01);
-  box-shadow: 0 20px 30px -8px #1a4e63;
 }
 
-/* ===== STATUS BOXES – modern card style ===== */
+/* ===== STATUS BOXES ===== */
 .status-box {
   position: relative;
   background: white;
@@ -71,12 +65,7 @@ body {
   transition: all 0.25s ease;
   border: 1px solid rgba(255,255,255,0.7);
 }
-.status-box:hover {
-  transform: translateY(-6px);
-  box-shadow: 0 28px 40px -8px #0a3340;
-}
 
-/* ===== LABEL STYLES ===== */
 .status-label {
   width: 28%;
   display: flex;
@@ -92,19 +81,9 @@ body {
   word-break: break-word;
 }
 
-/* NS label – sky blue */
-#trainNS .status-label {
-  background: #0924ED;
-  box-shadow: none;
-}
+#trainNS .status-label { background: #0924ED; }
+#trainEW .status-label { background: #05F714; }
 
-/* EW label – light green */
-#trainEW .status-label {
-  background: #05F714;
-  box-shadow: none);
-}
-
-/* ===== MESSAGE AREA ===== */
 .status-message {
   width: 72%;
   padding: 24px 18px;
@@ -115,14 +94,14 @@ body {
   backdrop-filter: blur(2px);
 }
 
-/* Status colors – original, enhanced with glow */
+/* Status colors */
 .operating .status-message { color: #0f7b3a; text-shadow: 0 0 8px rgba(15,123,58,0.2); }
 .stopped .status-message { color: #c0392b; text-shadow: 0 0 8px rgba(192,57,43,0.2); }
 .finished .status-message { color: #1f618d; text-shadow: 0 0 8px rgba(31,97,141,0.2); }
 .returning .status-message { color: #d35400; text-shadow: 0 0 8px rgba(211,84,0,0.2); }
 .construction .status-message { color: #884ea0; text-shadow: 0 0 8px rgba(136,78,160,0.2); }
 
-/* ===== RED DOT – more vibrant ===== */
+/* Red dot */
 .status-dot {
   position: absolute;
   top: 14px;
@@ -141,52 +120,32 @@ body {
   100% { transform: scale(1.3); opacity: 1; }
 }
 
-/* ===== RESPONSIVE ===== */
+/* Responsive */
 @media (max-width: 500px) {
-  .status-box {
-    flex-direction: column;
-    width: 100%;
-  }
-  .status-label {
-    width: 100%;
-    border-right: none;
-    border-bottom: 2px solid rgba(255,255,255,0.6);
-    padding: 16px;
-  }
-  .status-message {
-    width: 100%;
-    padding: 20px;
-  }
-  #welcomeBanner {
-    font-size: 1.3rem;
-    padding: 12px 16px;
-  }
+  .status-box { flex-direction: column; width: 100%; }
+  .status-label { width: 100%; border-right: none; border-bottom: 2px solid rgba(255,255,255,0.6); padding: 16px; }
+  .status-message { width: 100%; padding: 20px; }
+  #welcomeBanner { font-size: 1.3rem; padding: 12px 16px; }
 }
-
-/* NO background pattern or color on body */
 </style>
 </head>
 <body>
 
-<!-- ===== WELCOME BANNER ===== -->
 <div id="welcomeBanner">
   <span id="welcomeText">Loading...</span>
 </div>
 
-<!-- Language Selector -->
 <select id="langSelect">
   <option value="am">አማርኛ</option>
   <option value="en" selected>English</option>
   <option value="or">Afaan Oromoo</option>
 </select>
 
-<!-- NS Line -->
 <div class="status-box operating" id="trainNS">
   <div class="status-label" id="labelNS">NS LINE</div>
   <div class="status-message" id="statusMsgNS">Loading NS line status...</div>
 </div>
 
-<!-- EW Line -->
 <div class="status-box operating" id="trainEW">
   <div class="status-label" id="labelEW">EW LINE</div>
   <div class="status-message" id="statusMsgEW">Loading EW line status...</div>
@@ -198,6 +157,19 @@ body {
 =============================== */
 const NS_JSON = "https://wesutdgames.github.io/status/ns.json";
 const EW_JSON = "https://wesutdgames.github.io/status/ew.json";
+
+/* ===============================
+   BASE64 DECODER FOR AMHARIC
+=============================== */
+function decodeBase64UTF8(base64) {
+  try {
+    const binary = atob(base64);
+    const bytes = Uint8Array.from(binary, c => c.charCodeAt(0));
+    return new TextDecoder("utf-8").decode(bytes);
+  } catch {
+    return "⚠️ የአማርኛ መልዕክት አልተነበበም";
+  }
+}
 
 /* ===============================
    WELCOME LANGUAGE MAP
@@ -237,8 +209,12 @@ async function updateNS(lang) {
     const response = await fetch(NS_JSON + "?nocache=" + Date.now());
     const row = await response.json();
 
-   let status = row?.status?.toLowerCase();
-   let message = lang === "am" ? row?.am : lang === "en" ? row?.en : row?.or;
+    let status = row?.status?.toLowerCase();
+    let message = lang === "am"
+      ? decodeBase64UTF8(row?.am || "")
+      : lang === "en"
+      ? row?.en
+      : row?.or;
 
     if (!status || !message) {
       const hour = new Date().getHours();
@@ -301,7 +277,11 @@ async function updateEW(lang) {
     const row = await response.json();
 
     let status = row?.status?.toLowerCase();
-    let message = lang === "am" ? row?.am : lang === "en" ? row?.en : row?.or;
+    let message = lang === "am"
+      ? decodeBase64UTF8(row?.am || "")
+      : lang === "en"
+      ? row?.en
+      : row?.or;
 
     if (!status || !message) {
       const hour = new Date().getHours();
@@ -368,9 +348,6 @@ updateLanguage();
 updateAllLines();
 setInterval(updateAllLines, 60000);
 
-/* ===============================
-   LANGUAGE SELECTOR EVENT
-=============================== */
 document.getElementById("langSelect")
         .addEventListener("change", () => {
             updateLanguage();
