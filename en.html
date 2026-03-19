@@ -14,115 +14,83 @@
 
 body {
   font-family: 'Segoe UI', Roboto, 'Arial', sans-serif;
-  background: none; /* ← completely removed */
+  background: none;
   display: flex;
   flex-direction: column;
   align-items: center;
   min-height: 100vh;
-  margin: 0;
   gap: 30px;
   padding: 20px;
 }
-/* Language Selector */
-#langSelect {
-  margin-bottom: 5px;
-  font-size: 16px;
-  padding: 8px 14px;
-  border-radius: 12px;
-  background-color: #f3f4f6;
-  color: #111827;
-  font-weight: 500;
-  cursor: pointer;
-}
-/* ===== WELCOME BANNER – fancy upgrade ===== */
+
+/* ===== WELCOME BANNER ===== */
 #welcomeBanner {
   width: 100%;
   max-width: 1000px;
-  background: #F7AE05
-;
+  background: #F7AE05;
   border-radius: 50px;
   padding: 16px 24px;
   font-size: 1.6rem;
   color: white;
   text-align: center;
-  box-shadow: 0 15px 25px -10px rgba(0,50,80,0.2);
-  border: 1px solid rgba(255,255,255,0.8);
   font-weight: 600;
-  letter-spacing: 1px;
-  backdrop-filter: blur(2px);
-  transition: transform 0.2s;
-}
-#welcomeBanner:hover {
-  transform: scale(1.01);
-  box-shadow: 0 20px 30px -8px #1a4e63;
+  box-shadow: 0 15px 25px -10px rgba(0,50,80,0.2);
+  transition: 0.2s;
 }
 
-/* ===== STATUS BOXES – modern card style ===== */
+/* ===== STATUS BOX ===== */
 .status-box {
   position: relative;
   background: white;
   border-radius: 30px;
-  box-shadow: 0 20px 35px -10px rgba(0,30,40,0.3), inset 0 -1px 0 rgba(0,0,0,0.05);
   width: 480px;
   max-width: 90vw;
   display: flex;
   overflow: hidden;
-  font-size: 1.1rem;
   transition: all 0.25s ease;
-  border: 1px solid rgba(255,255,255,0.7);
-}
-.status-box:hover {
-  transform: translateY(-6px);
-  box-shadow: 0 28px 40px -8px #0a3340;
+  box-shadow: 0 20px 35px -10px rgba(0,30,40,0.3);
 }
 
-/* ===== LABEL STYLES ===== */
+.status-box:hover {
+  transform: translateY(-6px);
+}
+
+/* LABEL */
 .status-label {
   width: 28%;
   display: flex;
   align-items: center;
   justify-content: center;
   font-weight: 700;
-  text-align: center;
-  border-right: 2px solid rgba(255,255,255,0.6);
-  padding: 20px 8px;
-  font-size: 1.25rem;
   color: white;
-  text-shadow: none;
-  word-break: break-word;
+  padding: 20px 8px;
 }
 
-/* NS label – sky blue */
+/* NS */
 #trainNS .status-label {
   background: #0924ED;
-  box-shadow: none;
 }
 
-/* EW label – light green */
+/* EW */
 #trainEW .status-label {
   background: #05F714;
-  box-shadow: none);
 }
 
-/* ===== MESSAGE AREA ===== */
+/* MESSAGE */
 .status-message {
   width: 72%;
   padding: 24px 18px;
   text-align: center;
-  font-weight: 500;
-  line-height: 1.5;
-  background: rgba(255,255,255,0.6);
-  backdrop-filter: blur(2px);
 }
 
-/* Status colors – original, enhanced with glow */
-.operating .status-message { color: #0f7b3a; text-shadow: 0 0 8px rgba(15,123,58,0.2); }
-.stopped .status-message { color: #c0392b; text-shadow: 0 0 8px rgba(192,57,43,0.2); }
-.finished .status-message { color: #1f618d; text-shadow: 0 0 8px rgba(31,97,141,0.2); }
-.returning .status-message { color: #d35400; text-shadow: 0 0 8px rgba(211,84,0,0.2); }
-.construction .status-message { color: #884ea0; text-shadow: 0 0 8px rgba(136,78,160,0.2); }
+/* STATUS COLORS */
+.operating .status-message { color: #0f7b3a; }
+.stopped .status-message { color: #c0392b; }
+.finished .status-message { color: #1f618d; }
+.returning .status-message { color: #d35400; }
+.construction .status-message { color: #884ea0; }
 
-/* ===== RED DOT – more vibrant ===== */
+/* ===== BLINKING RED DOT ===== */
 .status-dot {
   position: absolute;
   top: 14px;
@@ -132,82 +100,63 @@ body {
   border-radius: 50%;
   background: #ff3b3b;
   box-shadow: 0 0 12px #ff0000, 0 0 24px #ff4444;
-  animation: pulse 0.8s infinite alternate ease-in-out;
-  z-index: 2;
+  animation: pulse 0.8s infinite alternate;
 }
 
 @keyframes pulse {
-  0% { transform: scale(1); opacity: 0.9; }
+  0% { transform: scale(1); opacity: 0.8; }
   100% { transform: scale(1.3); opacity: 1; }
 }
 
-/* ===== RESPONSIVE ===== */
+/* RESPONSIVE */
 @media (max-width: 500px) {
-  .status-box {
-    flex-direction: column;
-    width: 100%;
-  }
-  .status-label {
-    width: 100%;
-    border-right: none;
-    border-bottom: 2px solid rgba(255,255,255,0.6);
-    padding: 16px;
-  }
-  .status-message {
-    width: 100%;
-    padding: 20px;
-  }
-  #welcomeBanner {
-    font-size: 1.3rem;
-    padding: 12px 16px;
-  }
+  .status-box { flex-direction: column; }
+  .status-label { width: 100%; }
+  .status-message { width: 100%; }
 }
-
-/* NO background pattern or color on body */
 </style>
 </head>
 
 <body>
 
-<div id="welcomeBanner">
-  <span id="welcomeText">
-    Welcome to Addis Ababa Light Rail
-  </span>
-</div>
+<div id="welcomeBanner">Welcome to Addis Ababa Light Rail</div>
 
 <!-- NS -->
 <div class="status-box operating" id="trainNS">
   <div class="status-label">North South Line</div>
-  <div class="status-message" id="statusMsgNS">
-    Loading NS line status...
-  </div>
+  <div class="status-message" id="statusMsgNS">Loading...</div>
 </div>
 
 <!-- EW -->
 <div class="status-box operating" id="trainEW">
   <div class="status-label">East West Line</div>
-  <div class="status-message" id="statusMsgEW">
-    Loading EW line status...
-  </div>
+  <div class="status-message" id="statusMsgEW">Loading...</div>
 </div>
 
 <script>
-/* ===============================
-   JSON URLs
-=============================== */
+
+/* ================= JSON ================= */
 const NS_JSON = "https://wesutdgames.github.io/status/ns.json";
 const EW_JSON = "https://wesutdgames.github.io/status/ew.json";
 
-/* =============================
-   NS LINE (FIXED)
-============================= */
-async function updateNS() {
+/* ================= DOT CONTROL (SAFE) ================= */
+function handleDot(box, status) {
+  const old = box.querySelector(".status-dot");
+  if (old) old.remove();
 
+  if (status === "stopped") {
+    const dot = document.createElement("span");
+    dot.className = "status-dot";
+    box.appendChild(dot);
+  }
+}
+
+/* ================= NS ================= */
+async function updateNS() {
   const box = document.getElementById("trainNS");
-  const msgEl = document.getElementById("statusMsgNS");
+  const msg = document.getElementById("statusMsgNS");
 
   try {
-
     const res = await fetch(NS_JSON + "?t=" + Date.now());
     const row = await res.json();
 
@@ -215,58 +164,38 @@ async function updateNS() {
     let message = row?.en;
 
     if (!status || !message) {
+      const h = new Date().getHours();
 
-      const hour = new Date().getHours();
-
-      if (hour >= 6 && hour < 22) {
+      if (h >= 6 && h < 22) {
         status = "operating";
-        message = "🚆 The North-South line train is currently providing full service";
-      }
-
-      else if (hour >= 22 && hour < 24) {
+        message = "North-South line is operating";
+      } else if (h >= 22) {
         status = "finished";
-        message = "🏁 The regular train service on the North-South line has been completed!";
-      }
-
-      else if (hour >= 0 && hour < 5) {
+        message = "Service finished";
+      } else {
         status = "construction";
-        message = "🚧 Regular maintenance work is currently underway on the North-South line";
-      }
-
-      else {
-        status = "returning";
-        message = "🚆 The North-South line train service is being prepared to start";
+        message = "Maintenance mode";
       }
     }
 
-    box.querySelector(".status-dot")?.remove();
+    handleDot(box, status);
 
-    if (status === "stopped") {
-      const dot = document.createElement("span");
-      dot.className = "status-dot";
-      box.appendChild(dot);
-    }
-
-    msgEl.textContent = message;
+    msg.textContent = message;
     box.className = "status-box " + status;
 
   } catch {
-
-    msgEl.textContent = "❌📶 Please turn on Wi-Fi or data.";
+    msg.textContent = "No internet";
     box.className = "status-box stopped";
+    handleDot(box, "stopped");
   }
 }
 
-/* =============================
-   EW LINE (FIXED)
-============================= */
+/* ================= EW ================= */
 async function updateEW() {
-
   const box = document.getElementById("trainEW");
-  const msgEl = document.getElementById("statusMsgEW");
+  const msg = document.getElementById("statusMsgEW");
 
   try {
-
     const res = await fetch(EW_JSON + "?t=" + Date.now());
     const row = await res.json();
 
@@ -274,57 +203,42 @@ async function updateEW() {
     let message = row?.en;
 
     if (!status || !message) {
+      const h = new Date().getHours();
 
-      const hour = new Date().getHours();
-
-      if (hour >= 6 && hour < 22) {
+      if (h >= 6 && h < 22) {
         status = "operating";
-        message = "🚆 The East-West line train is currently providing full service";
-      }
-
-      else if (hour >= 22 && hour < 24) {
+        message = "East-West line is operating";
+      } else if (h >= 22) {
         status = "finished";
-        message = "🏁 The regular train service on the East-West line has been completed!";
-      }
-
-      else if (hour >= 0 && hour < 5) {
+        message = "Service finished";
+      } else {
         status = "construction";
-        message = "🚧 Regular maintenance work is currently underway on the East-West line";
-      }
-
-      else {
-        status = "returning";
-        message = "🚆 The East-West line train service is being prepared to start";
+        message = "Maintenance mode";
       }
     }
 
-    box.querySelector(".status-dot")?.remove();
+    handleDot(box, status);
 
-    if (status === "stopped") {
-      const dot = document.createElement("span");
-      dot.className = "status-dot";
-      box.appendChild(dot);
-    }
-
-    msgEl.textContent = message;
+    msg.textContent = message;
     box.className = "status-box " + status;
 
   } catch {
-
-    msgEl.textContent = "❌📶 Please turn on Wi-Fi or data.";
+    msg.textContent = "No internet";
     box.className = "status-box stopped";
+    handleDot(box, "stopped");
   }
 }
 
-/* LOAD */
-function updateAllLines(){
+/* ================= LOOP ================= */
+function updateAll() {
   updateNS();
   updateEW();
 }
 
-updateAllLines();
-setInterval(updateAllLines, 60000);
+updateAll();
+setInterval(updateAll, 60000);
 
 </script>
+
 </body>
 </html>
