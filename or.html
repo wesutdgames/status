@@ -5,6 +5,7 @@
 <title>የባቡር እንቅስቃሴ ሁኔታ - NS & EW</title>
 
 <style>
+/* ===== RESET & BASE ===== */
 * {
   margin: 0;
   padding: 0;
@@ -18,11 +19,12 @@ body {
   flex-direction: column;
   align-items: center;
   min-height: 100vh;
+  margin: 0;
   gap: 30px;
   padding: 20px;
 }
 
-/* ===== BANNER ===== */
+/* ===== WELCOME BANNER ===== */
 #welcomeBanner {
   width: 100%;
   max-width: 1000px;
@@ -32,6 +34,8 @@ body {
   font-size: 1.6rem;
   color: white;
   text-align: center;
+  box-shadow: 0 15px 25px -10px rgba(0,50,80,0.2);
+  font-weight: 600;
 }
 
 /* ===== STATUS BOX ===== */
@@ -43,56 +47,63 @@ body {
   width: 480px;
   max-width: 90vw;
   display: flex;
-  flex-direction: column; /* ✅ IMPORTANT CHANGE */
+  flex-direction: column;
   overflow: hidden;
 }
 
-/* ===== LABEL (NOW TOP) ===== */
+/* ===== LABEL (TOP) ===== */
 .status-label {
   width: 100%;
-  padding: 14px;
+  padding: 18px;
   font-weight: 700;
   text-align: center;
-  font-size: 1.2rem;
+  font-size: 1.25rem;
   color: white;
 }
 
-/* NS color */
 #trainNS .status-label {
   background: #0924ED;
 }
 
-/* EW color */
 #trainEW .status-label {
   background: #05F714;
 }
 
-/* ===== MESSAGE BELOW ===== */
+/* ===== MESSAGE ===== */
 .status-message {
-  padding: 22px;
+  width: 100%;
+  padding: 24px 18px;
   text-align: center;
   font-weight: 500;
 }
 
-/* STATUS COLORS */
+/* ===== STATUS COLORS ===== */
 .operating .status-message { color: #0f7b3a; }
 .stopped .status-message { color: #c0392b; }
 .finished .status-message { color: #1f618d; }
 .returning .status-message { color: #d35400; }
 .construction .status-message { color: #884ea0; }
 
-/* RED DOT */
+/* ===== BLINKING RED DOT ===== */
 .status-dot {
   position: absolute;
-  top: 10px;
-  right: 15px;
-  width: 12px;
-  height: 12px;
+  top: 14px;
+  right: 18px;
+  width: 14px;
+  height: 14px;
   border-radius: 50%;
-  background: red;
+  background: #ff3b3b;
+  box-shadow: 0 0 12px #ff0000, 0 0 24px #ff4444;
+  animation: pulse 0.8s infinite alternate ease-in-out;
+  z-index: 2;
 }
 
-/* MOBILE */
+@keyframes pulse {
+  0% { transform: scale(1); opacity: 0.8; }
+  100% { transform: scale(1.4); opacity: 1; }
+}
+
+/* ===== RESPONSIVE ===== */
 @media (max-width: 500px) {
   .status-box {
     width: 100%;
@@ -104,7 +115,9 @@ body {
 <body>
 
 <div id="welcomeBanner">
-  Gara Geejjibaa Baabura Salphaa Finfinnee baga nagaan dhuftan
+  <span>
+    Gara Geejjibaa Baabura Salphaa Finfinnee baga nagaan dhuftan
+  </span>
 </div>
 
 <!-- NS -->
@@ -128,14 +141,22 @@ body {
 </div>
 
 <script>
+/* ===============================
+   JSON URLs
+=============================== */
 const NS_JSON = "https://wesutdgames.github.io/status/ns.json";
 const EW_JSON = "https://wesutdgames.github.io/status/ew.json";
 
+/* =============================
+   NS LINE
+============================= */
 async function updateNS() {
+
   const box = document.getElementById("trainNS");
   const msgEl = document.getElementById("statusMsgNS");
 
   try {
+
     const res = await fetch(NS_JSON + "?t=" + Date.now());
     const row = await res.json();
 
@@ -143,11 +164,33 @@ async function updateNS() {
     let message = row?.or;
 
     if (!status || !message) {
-      status = "operating";
-      message = "🚆 Daandii Kaabaa - Kibbaa irratti baaburri tajaajila kennaa jira";
+
+      const hour = new Date().getHours();
+
+      if (hour >= 6 && hour < 22) {
+        status = "operating";
+        message = "🚆 Daandii Kaabaa - Kibbaa irratti baaburri tajaajila guutuu kennaa jira";
+      }
+
+      else if (hour >= 22 && hour < 24) {
+        status = "finished";
+        message = "🏁 Tajaajilli baaburaa xumurameera!";
+      }
+
+      else if (hour >= 0 && hour < 5) {
+        status = "construction";
+        message = "🚧 Hojii suphaa gaggeeffamaa jira";
+      }
+
+      else {
+        status = "returning";
+        message = "🚆 Tajaajilli jalqabamuuf qophaa’aa jira";
+      }
     }
 
-    box.querySelector(".status-dot")?.remove();
+    /* 🔴 DOT LOGIC (RESTORED) */
+    const oldDot = box.querySelector(".status-dot");
+    if (oldDot) oldDot.remove();
 
     if (status === "stopped") {
       const dot = document.createElement("span");
@@ -161,14 +204,25 @@ async function updateNS() {
   } catch {
     msgEl.textContent = "❌📶 Mee Wi-Fi ykn data banaa";
     box.className = "status-box stopped";
+
+    if (!box.querySelector(".status-dot")) {
+      const dot = document.createElement("span");
+      dot.className = "status-dot";
+      box.appendChild(dot);
+    }
   }
 }
 
+/* =============================
+   EW LINE
+============================= */
 async function updateEW() {
+
   const box = document.getElementById("trainEW");
   const msgEl = document.getElementById("statusMsgEW");
 
   try {
+
     const res = await fetch(EW_JSON + "?t=" + Date.now());
     const row = await res.json();
 
@@ -176,11 +230,33 @@ async function updateEW() {
     let message = row?.or;
 
     if (!status || !message) {
-      status = "operating";
-      message = "🚆 Daandii Bahaa - Dhihaa irratti baaburri tajaajila kennaa jira";
+
+      const hour = new Date().getHours();
+
+      if (hour >= 6 && hour < 22) {
+        status = "operating";
+        message = "🚆 Daandii Bahaa - Dhihaa irratti baaburri tajaajila guutuu kennaa jira";
+      }
+
+      else if (hour >= 22 && hour < 24) {
+        status = "finished";
+        message = "🏁 Tajaajilli baaburaa xumurameera!";
+      }
+
+      else if (hour >= 0 && hour < 5) {
+        status = "construction";
+        message = "🚧 Hojii suphaa gaggeeffamaa jira";
+      }
+
+      else {
+        status = "returning";
+        message = "🚆 Tajaajilli jalqabamuuf qophaa’aa jira";
+      }
     }
 
-    box.querySelector(".status-dot")?.remove();
+    /* 🔴 DOT LOGIC */
+    const oldDot = box.querySelector(".status-dot");
+    if (oldDot) oldDot.remove();
 
     if (status === "stopped") {
       const dot = document.createElement("span");
@@ -194,9 +270,18 @@ async function updateEW() {
   } catch {
     msgEl.textContent = "❌📶 Mee Wi-Fi ykn data banaa";
     box.className = "status-box stopped";
+
+    if (!box.querySelector(".status-dot")) {
+      const dot = document.createElement("span");
+      dot.className = "status-dot";
+      box.appendChild(dot);
+    }
   }
 }
 
+/* =============================
+   LOAD
+============================= */
 function updateAllLines(){
   updateNS();
   updateEW();
